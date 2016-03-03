@@ -19,6 +19,8 @@ module Soothsayer
   #     c.client_secret = config.client_secret
   #     c.access_token = config.access_token
   #     c.refresh_token = config.refresh_token
+  #     c.application_name = "your application name"
+  #     c.application_version = "your application version"
   #   end
   #
   def self.config(config = Configuration.new)
@@ -51,7 +53,11 @@ module Soothsayer
 
       def create_client
         raise OAuthTokenError, 'Please configure Soothsayer first with Soothsayer.config.' if Soothsayer.credentials.nil?
-        client = Google::APIClient.new(:authorization => :oauth_2)
+        client = Google::APIClient.new(
+          :authorization => :oauth_2,
+          :application_name => Soothsayer.credentials.application_name,
+          :application_version => Soothsayer.credentials.application_version
+        )
         unless client.authorization.nil?
           client.authorization.scope = nil
           client.authorization.client_id = Soothsayer.credentials.client_id
